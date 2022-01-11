@@ -20,4 +20,3 @@ def solution(brown, yellow):
 
 
 print(solution(8, 1))
-
