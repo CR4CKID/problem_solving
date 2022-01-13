@@ -15,17 +15,5 @@
         
     11과 011은 같은 숫자로 취급하므로 str을 int로 바꿔주기
     
-    
-asdasasd
 """
-
-
-def solution(numbers):
-    def num_combination(n):
-        if n == 1:
-            return [a for a in numbers]
-        else:
-            return [a + b for a in numbers for b in num_combination(n - 1)]
-
-    return
 
