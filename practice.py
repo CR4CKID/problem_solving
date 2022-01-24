@@ -1,14 +1,3 @@
-s = "GATATATGCATATACTT"
-t = "ATAT"
+arr = [[1, 2, 3], ["a", "b", "c"]]
 
-answer = []
-start_idx = 0
-
-try:
-    while True:
-        idx = s.index(t, start_idx)
-        answer.append(idx + 1)
-        start_idx = idx + 1
-except:
-    print(" ".join(map(str, answer)))
-
+print(list(zip(*arr)))
