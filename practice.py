@@ -1,7 +1,20 @@
-from Bio.Align.Applications import MuscleCommandline
+from Bio import SwissProt
+from Bio import ExPASy
+import re
 
-muscle_exe = r"C:\Users\CRACKID\Desktop\Util\muscle_v3.exe"
-cmd_line = MuscleCommandline(muscle_exe, input="HBA.all.fasta", out="HBA.aln", clw=True)
-print(cmd_line)
+p = re.compile(r"N[^P][S|T][^P]")
 
-stdout, stderr = cmd_line()
+
+def N_find(access):
+    handle = ExPASy.get_sprot_raw(access)
+    seq = SwissProt.read(handle).sequence
+    ans = []
+    while p.search(seq):
+        idx = p.search(seq).start() + 1
+        ans.append(idx)
+        seq = seq[idx:]
+    return ans
+
+
+print(N_find("P07204_TRBM_HUMAN"))
+
