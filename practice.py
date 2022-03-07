@@ -1,26 +1,20 @@
-from Bio import SeqIO
+height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
 
-records = SeqIO.parse("sample.fasta", "fasta")
-data = [str(record.seq) for record in records]
-
-
-def substring(long, short):
-    l = len(short) // 2
-
-    def combine(a, b):
-        return a[: a.index(b[:l])] + b
-
-    if short[:l] in long:
-        return combine(long, short)
-    elif long[:l] in short:
-        return combine(short, long)
+ans = 0
 
 
-ans = data.pop()
-while data:
-    for seq1 in data:
-        if substring(ans, seq1):
-            ans = substring(ans, seq1)
-            data.remove(seq1)
-            break
+def find_bigger(num):
+    for i, h in enumerate(height):
+        if h >= num:
+            return i
+
+
+while height:
+    n = height.pop(0)
+    if find_bigger(n):
+        end = find_bigger(n)
+        ans += sum(map(lambda x: min(n, height[end]) - x, height[:end]))
+        height = height[end - 1 :]
+    height = height[1:]
+
 print(ans)
