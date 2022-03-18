@@ -1,20 +1,32 @@
-height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites):
+        from collections import defaultdict
 
-ans = 0
+        if not prerequisites:
+            return True
+
+        prerequisites.sort()
+        graph = defaultdict(list)
+
+        for a, b in prerequisites:
+            graph[b].append(a)
+
+        ans = []
+
+        def dfs(a, path=[]):
+            while graph[a]:
+                b = graph[a].pop(0)
+                if b in path:
+                    ans.append(False)
+                else:
+                    dfs(b, path + [b])
+
+        dfs(min(graph), path=[min(graph)])
+
+        return len(ans) == 0
 
 
-def find_bigger(num):
-    for i, h in enumerate(height):
-        if h >= num:
-            return i
+Solution().canFinish(
+    1, [[0, 10], [3, 18], [5, 5], [6, 11], [11, 14], [13, 1], [15, 1], [17, 4]]
+)
 
-
-while height:
-    n = height.pop(0)
-    if find_bigger(n):
-        end = find_bigger(n)
-        ans += sum(map(lambda x: min(n, height[end]) - x, height[:end]))
-        height = height[end - 1 :]
-    height = height[1:]
-
-print(ans)
