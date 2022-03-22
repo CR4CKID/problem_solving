@@ -1,32 +1,49 @@
 class Solution:
-    def canFinish(self, numCourses: int, prerequisites):
+    def findCheapestPrice(self, n: int, flights, src: int, dst: int, k: int) -> int:
         from collections import defaultdict
 
-        if not prerequisites:
+        global ans
+
+        graph = defaultdict(list)
+        for a, b, p in sorted(flights, key=lambda x: (x[2])):
+            graph[a].append((b, p))
+
+        ans = 100000
+
+        def dfs(a, p=0, t=-1):
+            global ans
+            if t > k or p > ans:
+                return False
+            if a == dst:
+                ans = min(ans, p)
+                return True
+            for b, p2 in graph[a]:
+                if not dfs(b, p + p2, t + 1):
+                    break
             return True
 
-        prerequisites.sort()
-        graph = defaultdict(list)
+        visited = set()
 
-        for a, b in prerequisites:
-            graph[b].append(a)
+        def available(a, t=-1):
+            if a in visited or t > k:
+                return
+            else:
+                visited.add(a)
+            if a == dst:
+                visited.add(a)
+                return
+            for b, p in graph[a]:
+                available(b, t + 1)
 
-        ans = []
-
-        def dfs(a, path=[]):
-            while graph[a]:
-                b = graph[a].pop(0)
-                if b in path:
-                    ans.append(False)
-                else:
-                    dfs(b, path + [b])
-
-        dfs(min(graph), path=[min(graph)])
-
-        return len(ans) == 0
+        available(src)
+        if dst in visited:
+            dfs(src)
+            return ans
+        else:
+            return -1
 
 
-Solution().canFinish(
-    1, [[0, 10], [3, 18], [5, 5], [6, 11], [11, 14], [13, 1], [15, 1], [17, 4]]
-)
+arr4 = [4, [[0, 1, 1], [0, 2, 5], [1, 2, 1], [2, 3, 1]], 0, 3, 1]
+
+print(Solution().findCheapestPrice(*arr4))
 
