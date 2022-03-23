@@ -1,49 +1,30 @@
 class Solution:
-    def findCheapestPrice(self, n: int, flights, src: int, dst: int, k: int) -> int:
+    def findCheapestPrice(self, n: int, flights, src: int, dst: int, k: int):
         from collections import defaultdict
-
-        global ans
+        import heapq
 
         graph = defaultdict(list)
-        for a, b, p in sorted(flights, key=lambda x: (x[2])):
+        for a, b, p in flights:
             graph[a].append((b, p))
 
-        ans = 100000
+        Q = [(0, src, k)]
+        visited = dict()
 
-        def dfs(a, p=0, t=-1):
-            global ans
-            if t > k or p > ans:
-                return False
+        while Q:
+            p1, a, t = heapq.heappop(Q)
             if a == dst:
-                ans = min(ans, p)
-                return True
-            for b, p2 in graph[a]:
-                if not dfs(b, p + p2, t + 1):
-                    break
-            return True
+                return p1
+            if t >= 0 and (a not in visited or visited[a] < t):
+                for b, p2 in graph[a]:
+                    heapq.heappush(Q, (p1 + p2, b, t - 1))
+                visited[a] = t
 
-        visited = set()
-
-        def available(a, t=-1):
-            if a in visited or t > k:
-                return
-            else:
-                visited.add(a)
-            if a == dst:
-                visited.add(a)
-                return
-            for b, p in graph[a]:
-                available(b, t + 1)
-
-        available(src)
-        if dst in visited:
-            dfs(src)
-            return ans
-        else:
-            return -1
+        return -1
 
 
-arr4 = [4, [[0, 1, 1], [0, 2, 5], [1, 2, 1], [2, 3, 1]], 0, 3, 1]
-
-print(Solution().findCheapestPrice(*arr4))
+print(
+    Solution().findCheapestPrice(
+        5, [[0, 1, 5], [1, 2, 5], [0, 3, 2], [3, 1, 2], [1, 4, 1], [4, 2, 1]], 0, 2, 2
+    )
+)
 
